@@ -37,9 +37,9 @@
       </tags>
   </entry>
   <entry>
-    <title>日记20230610</title>
-    <url>/2023/06/10/20230610/</url>
-    <content><![CDATA[<h1 id="转专业成功了"><a href="#转专业成功了" class="headerlink" title="转专业成功了"></a>转专业成功了</h1><p>其实感觉转专业成功只有成功的那一刻是很开心，后续一直很折磨，我啥也代码也不会，解决这些问题的能力也不咋地，反正就，人的欲望像高山滚石一样的，然后一旦开始就停不下来了。</p>
+    <title>日记20230506</title>
+    <url>/2023/05/06/20230506/</url>
+    <content><![CDATA[<h1 id="转专业"><a href="#转专业" class="headerlink" title="转专业"></a>转专业</h1><p>转专业考试确实感觉压力很大，很沉重的感觉，自己学的其实很一般<br><br>然后转专业全是信管和物联网的，确实当时发挥的并不好，高数考试考的都是大一上的内容为主，所以听难崩的。<br><br>不过认识了很多很多大佬</p>
 ]]></content>
       <categories>
         <category>日记</category>
@@ -49,9 +49,9 @@
       </tags>
   </entry>
   <entry>
-    <title>日记20230506</title>
-    <url>/2023/05/06/20230506/</url>
-    <content><![CDATA[<h1 id="转专业"><a href="#转专业" class="headerlink" title="转专业"></a>转专业</h1><p>转专业考试确实感觉压力很大，很沉重的感觉，自己学的其实很一般<br><br>然后转专业全是信管和物联网的，确实当时发挥的并不好，高数考试考的都是大一上的内容为主，所以听难崩的。<br><br>不过认识了很多很多大佬</p>
+    <title>日记20230610</title>
+    <url>/2023/06/10/20230610/</url>
+    <content><![CDATA[<h1 id="转专业成功了"><a href="#转专业成功了" class="headerlink" title="转专业成功了"></a>转专业成功了</h1><p>其实感觉转专业成功只有成功的那一刻是很开心，后续一直很折磨，我啥也代码也不会，解决这些问题的能力也不咋地，反正就，人的欲望像高山滚石一样的，然后一旦开始就停不下来了。</p>
 ]]></content>
       <categories>
         <category>日记</category>
@@ -73,6 +73,18 @@
       </tags>
   </entry>
   <entry>
+    <title>日记20231001</title>
+    <url>/2023/10/01/20231001/</url>
+    <content><![CDATA[<h1 id="开学很久：前端启动！"><a href="#开学很久：前端启动！" class="headerlink" title="开学很久：前端启动！"></a>开学很久：前端启动！</h1><p>感觉转专业确实很困难，要重修的东西很多，我还需要决定一个方向去走，我也不知道，反正跟着李师兄混着挺好。然后学学前端，努努力，拿了一等奖学金、三好学生标兵等，数学建模省三（挺不甘心的），感觉还好吧，自己学习能力还是很强的，方向要变了是真的，感觉在计科班里面，自己和别的同学写代码能力差距很大！！！</p>
+]]></content>
+      <categories>
+        <category>日记</category>
+      </categories>
+      <tags>
+        <tag>日记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>日记20240301</title>
     <url>/2024/03/01/20240301/</url>
     <content><![CDATA[<h1 id="前端之路"><a href="#前端之路" class="headerlink" title="前端之路"></a>前端之路</h1><p>暑假三天打鱼两天晒网，基本没怎么学习哈哈哈哈哈哈哈，反正也是学了</p>
@@ -85,9 +97,9 @@
       </tags>
   </entry>
   <entry>
-    <title>日记20231001</title>
-    <url>/2023/10/01/20231001/</url>
-    <content><![CDATA[<h1 id="开学很久：前端启动！"><a href="#开学很久：前端启动！" class="headerlink" title="开学很久：前端启动！"></a>开学很久：前端启动！</h1><p>感觉转专业确实很困难，要重修的东西很多，我还需要决定一个方向去走，我也不知道，反正跟着李师兄混着挺好。然后学学前端，努努力，拿了一等奖学金、三好学生标兵等，数学建模省三（挺不甘心的），感觉还好吧，自己学习能力还是很强的，方向要变了是真的，感觉在计科班里面，自己和别的同学写代码能力差距很大！！！</p>
+    <title>日记20240613</title>
+    <url>/2024/06/13/20240613/</url>
+    <content><![CDATA[<h1 id="复习英语二战四级（希望成功吧）"><a href="#复习英语二战四级（希望成功吧）" class="headerlink" title="复习英语二战四级（希望成功吧）"></a>复习英语二战四级（希望成功吧）</h1><p>大二下真的很忙碌的，哈哈哈哈哈哈哈哈哈哈，今天的计划就是先把作业写完，只刷英语，写写日记。</p>
 ]]></content>
       <categories>
         <category>日记</category>
@@ -107,7 +119,7 @@
 
 <h3 id="上传代码到Github托管"><a href="#上传代码到Github托管" class="headerlink" title="上传代码到Github托管"></a>上传代码到Github托管</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
-<h2 id="效果真不错"><a href="#效果真不错" class="headerlink" title="效果真不错"></a>效果真不错</h2><p><img src="http://shayebuhui.free3v.work/img/1.1.png" alt="alt text"></p>
+<h2 id="效果真不错"><a href="#效果真不错" class="headerlink" title="效果真不错"></a>效果真不错</h2><p><img src="https://shayebuhui.free3v.work/img/1.1.png" alt="alt text"></p>
 ]]></content>
       <categories>
         <category>Hexo</category>
@@ -116,18 +128,6 @@
       <tags>
         <tag>Hexo</tag>
         <tag>教程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>日记20240613</title>
-    <url>/2024/06/13/20240613/</url>
-    <content><![CDATA[<h1 id="复习英语二战四级（希望成功吧）"><a href="#复习英语二战四级（希望成功吧）" class="headerlink" title="复习英语二战四级（希望成功吧）"></a>复习英语二战四级（希望成功吧）</h1><p>大二下真的很忙碌的，哈哈哈哈哈哈哈哈哈哈，今天的计划就是先把作业写完，只刷英语，写写日记。</p>
-]]></content>
-      <categories>
-        <category>日记</category>
-      </categories>
-      <tags>
-        <tag>日记</tag>
       </tags>
   </entry>
 </search>
