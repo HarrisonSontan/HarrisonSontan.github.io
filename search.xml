@@ -1,6 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>express连接数据库以及身份认证</title>
+    <url>/2024/07/31/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/</url>
+    <content><![CDATA[<h1 id="项目中操作MySQL"><a href="#项目中操作MySQL" class="headerlink" title="项目中操作MySQL"></a>项目中操作MySQL</h1><h2 id="在项目中操作数据库的步骤"><a href="#在项目中操作数据库的步骤" class="headerlink" title="在项目中操作数据库的步骤"></a>在项目中操作数据库的步骤</h2><h3 id="安装-MySQL-数据库的第三方模块-mysql"><a href="#安装-MySQL-数据库的第三方模块-mysql" class="headerlink" title="安装 MySQL 数据库的第三方模块(mysql)"></a>安装 MySQL 数据库的第三方模块(mysql)</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install mysql</span><br></pre></td></tr></table></figure>
+<h3 id="通过-mysql-模块连接到-MySQL-数据库"><a href="#通过-mysql-模块连接到-MySQL-数据库" class="headerlink" title="通过 mysql 模块连接到 MySQL 数据库"></a>通过 mysql 模块连接到 MySQL 数据库</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 导入 mysql 模块</span></span><br><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">&#x27;mysql&#x27;</span>)</span><br><span class="line"><span class="comment">// 2. 建立连接</span></span><br><span class="line"><span class="keyword">const</span> db = mysql.<span class="title function_">createPool</span>(&#123;</span><br><span class="line">    <span class="attr">host</span>:<span class="string">&#x27;127.0.0.1&#x27;</span>,</span><br><span class="line">    <span class="attr">user</span>:<span class="string">&#x27;root&#x27;</span>,</span><br><span class="line">    <span class="attr">password</span>:<span class="string">&#x27;你的密码&#x27;</span></span><br><span class="line">    <span class="attr">database</span>:<span class="string">&#x27;mydb&#x27;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="通过-mysql-模块执行-SQL-语句"><a href="#通过-mysql-模块执行-SQL-语句" class="headerlink" title="通过 mysql 模块执行 SQL 语句"></a>通过 mysql 模块执行 SQL 语句</h3><h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 检测 mysql 模块能否正常工作</span></span><br><span class="line">db.<span class="title function_">query</span>(<span class="string">&#x27;SELECT 1&#x27;</span>,<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(results)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 插入表的数据对象</span></span><br><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">username</span>:<span class="string">&#x27;ww&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;123&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ？表示占位符</span></span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&quot;INSERT INTO users (username,password) VALUES (?,?)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用数组的形式，以此将？占位符指定具体的值</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,[user.<span class="property">username</span>,user.<span class="property">password</span>],<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;插入数据成功&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="插入数据的快速方法"><a href="#插入数据的快速方法" class="headerlink" title="插入数据的快速方法"></a>插入数据的快速方法</h4><p>向表插入数据时，数据对象和每一个属性和数据表的字段一一对应，可以这样插入</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">username</span>:<span class="string">&#x27;mark&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;666&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;INSERT INTO users SET ?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,user,<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;插入数据成功&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">id</span>:<span class="number">4</span>,<span class="attr">username</span>:<span class="string">&#x27;marry&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;321&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;UPDATE users SET username=?,password=? WHERE id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,[user.<span class="property">username</span>,user.<span class="property">password</span>,user.<span class="property">id</span>],<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功!&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="更新数据边界方式"><a href="#更新数据边界方式" class="headerlink" title="更新数据边界方式"></a>更新数据边界方式</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">id</span>:<span class="number">4</span>,<span class="attr">username</span>:<span class="string">&#x27;mike&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;321&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;UPDATE users SET ? WHERE id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,[user,user.<span class="property">id</span>],<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功!&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="删除数据-比较危险删除无法恢复"><a href="#删除数据-比较危险删除无法恢复" class="headerlink" title="删除数据(比较危险删除无法恢复)"></a>删除数据(比较危险删除无法恢复)</h4><p>id是唯一标识符，来删除对应数据</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;DELETE FROM users WHERE id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,<span class="number">4</span>,<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功!&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="标记删除-推荐使用"><a href="#标记删除-推荐使用" class="headerlink" title="标记删除(推荐使用)"></a>标记删除(推荐使用)</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;update users set status=? where id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr, [<span class="number">1</span>, <span class="number">3</span>], <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span> (results.<span class="property">affectedRows</span> === <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;标记删除成功&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="前后端的身份认证"><a href="#前后端的身份认证" class="headerlink" title="前后端的身份认证"></a>前后端的身份认证</h1><h2 id="Web-开发模式"><a href="#Web-开发模式" class="headerlink" title="Web 开发模式"></a>Web 开发模式</h2><h3 id="服务器渲染的-Web-开发模式"><a href="#服务器渲染的-Web-开发模式" class="headerlink" title="服务器渲染的 Web 开发模式"></a>服务器渲染的 Web 开发模式</h3><p><strong>服务器渲染的概念:</strong> 服务器发送给客户端的HTML页面,是在服务器通过字符串的拼接,动态生成的。客户端不需要使用 Ajax 这样的技术额外请求页面的数据。代码如下:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/index.html&#x27;</span>,<span class="function">(<span class="params">req,res</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> user = &#123;<span class="attr">name</span>:<span class="string">&#x27;zs&#x27;</span>,<span class="attr">age</span>:<span class="number">20</span>&#125;</span><br><span class="line">    <span class="keyword">const</span> html = <span class="string">`&lt;h1&gt;姓名:<span class="subst">$&#123;user.name&#125;</span>,年龄:<span class="subst">$&#123;user.age&#125;</span>&lt;/h1&gt;`</span></span><br><span class="line">    res.<span class="title function_">send</span>(html)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="服务端渲染的优缺点"><a href="#服务端渲染的优缺点" class="headerlink" title="服务端渲染的优缺点"></a>服务端渲染的优缺点</h3><ul>
+<li>优点:</li>
+</ul>
+<ol>
+<li>前端耗时少。因为服务器端负责动态生成 HTML 内容,浏览器只需要直接渲染页面即可。尤其是移动端,更省电。</li>
+<li>有利于 SEO 。因为服务端响应的是完整的 HTML 页面内容,所以爬虫更容易爬取获得信息,更有利于 SEO。</li>
+</ol>
+<ul>
+<li>缺点:</li>
+</ul>
+<ol>
+<li>占用服务器资源,即服务器端完成 HTML 页面内容的拼接,如果请求较多,会对服务器造成一定的访问压力。</li>
+<li>不利于前后端分离,开发效率低。使用服务器端渲染,则无法进行分工合作,尤其对于前端复杂度高的项目,不利于项目高效开发。</li>
+</ol>
+<h3 id="前后端分离的-Web-开发模式"><a href="#前后端分离的-Web-开发模式" class="headerlink" title="前后端分离的 Web 开发模式"></a>前后端分离的 Web 开发模式</h3><p>前后端分离的概念:前后端分离的开发模式,依赖于 Ajax 技术的广泛应用。简而言之,前后端分离的 Web 开发模式,就是后端只负责提供 API 接口,前端使用 Ajax 调用接口的开发模式。</p>
+<h3 id="前后端分离的优缺点"><a href="#前后端分离的优缺点" class="headerlink" title="前后端分离的优缺点"></a>前后端分离的优缺点</h3><ul>
+<li>优点:</li>
+</ul>
+<ol>
+<li>开发体验好,前端专注于 UI 界面开发,后端专注于 api 的开发,且前端有更多的选择性。</li>
+<li>用户体验好,Ajax 技术的广泛应用,极大的提高了用户的体验,可以轻松实现页面的局部刷新。</li>
+<li>减轻了服务器端的渲染压力,每个页面最终在每个用户的浏览器中生成的。</li>
+</ol>
+<ul>
+<li>缺点:</li>
+</ul>
+<ol>
+<li>不利于 SEO ,因为 HTML 是需要客户端动态拼接完成的,所以爬虫无法爬取页面的有效信息。可以用 Vue、React 等框架的 SSR (server side render) 技术来解决 SEO 问题。</li>
+</ol>
+<h3 id="如何选择-Web-开发模式"><a href="#如何选择-Web-开发模式" class="headerlink" title="如何选择 Web 开发模式"></a>如何选择 Web 开发模式</h3><ul>
+<li>企业级网页,主要是展示而没有复杂的交互,不需要考虑 SEO,就服务器端渲染。</li>
+<li>后台管理项目,交互性比较强,不需要考虑 SEO,那么就可以使用前后端分离的开发模式。</li>
+</ul>
+<h2 id="什么是身份认证"><a href="#什么是身份认证" class="headerlink" title="什么是身份认证"></a>什么是身份认证</h2><p>身份认证又称为”身份验证”、”鉴权”，是指通过一定的手段，完成对用户身份的确认。</p>
+<h3 id="不同开发模式的身份认证"><a href="#不同开发模式的身份认证" class="headerlink" title="不同开发模式的身份认证"></a>不同开发模式的身份认证</h3><ol>
+<li>服务器渲染推荐使用 Session 认证机制</li>
+<li>前后端分离推荐使用 JWT 认证机制</li>
+</ol>
+<h2 id="Session-认证机制"><a href="#Session-认证机制" class="headerlink" title="Session 认证机制"></a>Session 认证机制</h2><h3 id="HTTP-协议的无状态性"><a href="#HTTP-协议的无状态性" class="headerlink" title="HTTP 协议的无状态性"></a>HTTP 协议的无状态性</h3><p>了解 HTTP 协议的无状态性是进一步学习 Session 认证机制的必要前提。<br>HTTP 协议的无状态性，值得是客户端的每次 HTTP 请求都是独立的，连续多个请求之间没有直接的关系，服务器不会主动保留每次HTTP请求的状态。</p>
+<h3 id="如何突破-HTTP-无状态的限制"><a href="#如何突破-HTTP-无状态的限制" class="headerlink" title="如何突破 HTTP 无状态的限制"></a>如何突破 HTTP 无状态的限制</h3><p><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image.png" alt="alt text"></p>
+<h3 id="什么是-Cookie"><a href="#什么是-Cookie" class="headerlink" title="什么是 Cookie"></a>什么是 Cookie</h3><p>Cookie 是存储在用户浏览器中的一段不超过 4 KB 的字符串。他由一个名称(Name)、一个值(Value) 和其他几个用于 Cookie 有效期、安全性、适用范围的可选属性组成。</p>
+<p>不同域名下的 Cookie 各自独立，每当客户端发起请求时，会自动把当前域名下所有未过期的 Cookie 一同发送到服务器。</p>
+<p>Cookie 的几大特性：</p>
+<ol>
+<li>自动发送</li>
+<li>域名独立</li>
+<li>过期时限</li>
+<li>4KB 限制</li>
+</ol>
+<h3 id="Cookie-在身份认证中的作用"><a href="#Cookie-在身份认证中的作用" class="headerlink" title="Cookie 在身份认证中的作用"></a>Cookie 在身份认证中的作用</h3><p>客户端在第一次请求服务器的时候，服务器通过响应头的形式，向客户端发送一个身份认证的 Cookie，客户端会自动将 Cookie 保存在浏览器中。<br>随后，当客户端浏览器每次请求服务器的时候，浏览器会自动将身份认证相关的 Cookie，通过请求头的形式发送给服务器，服务器即可验证客户端的身份。<br><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-1.png" alt="alt text"></p>
+<h3 id="Cookie-不具有安全性"><a href="#Cookie-不具有安全性" class="headerlink" title="Cookie 不具有安全性"></a>Cookie 不具有安全性</h3><p>由于 Cookie 是存储在浏览器中的，而且浏览器也提供了读写 Cookie 的 API，因此 Cookie 很容易被伪造，不具有安全性。因此不建议服务器将重要的隐私数据，通过 Cookie 的形式发送给浏览器。</p>
+<h3 id="提高身份认证的安全性"><a href="#提高身份认证的安全性" class="headerlink" title="提高身份认证的安全性"></a>提高身份认证的安全性</h3><p>为了防止客户伪造会员卡，收银员在拿到客户出示的会员卡之后，可以在收银机上进行刷卡认证，只有收银机确认存在的会员卡，才能被正常使用。<br><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-2.png" alt="alt text"></p>
+<h3 id="Session-的工作原理"><a href="#Session-的工作原理" class="headerlink" title="Session 的工作原理"></a>Session 的工作原理</h3><p><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-3.png" alt="alt text"></p>
+<h3 id="配置-Session-中间件"><a href="#配置-Session-中间件" class="headerlink" title="配置 Session 中间件"></a>配置 Session 中间件</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 配置 Session 中间件</span></span><br><span class="line"><span class="keyword">const</span> session = <span class="built_in">require</span>(<span class="string">&#x27;express-session&#x27;</span>)</span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">session</span>(&#123;</span><br><span class="line">  <span class="attr">secret</span>: <span class="string">&#x27;itheima&#x27;</span>,</span><br><span class="line">  <span class="attr">resave</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">saveUninitialized</span>: <span class="literal">true</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<h2 id="JWT-认证机制"><a href="#JWT-认证机制" class="headerlink" title="JWT 认证机制"></a>JWT 认证机制</h2><h3 id="了解-Session-认证的局限性"><a href="#了解-Session-认证的局限性" class="headerlink" title="了解 Session 认证的局限性"></a>了解 Session 认证的局限性</h3><p>Session 认证机制需要配合 Cookie 才能实现。由于 Cookie 默认不支持跨域访问，所以，当涉及到前端跨域请求后端接口的时候，需要做很多额外的配置，才能实现跨域 Session 认证。</p>
+<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><ul>
+<li>当前端请求后端接口<strong>不存在跨域问题</strong>的时候，推荐使用 Session 身份认证机制。</li>
+<li>当前端需要跨域请求后端接口的时候，不推荐使用 Session 身份认证机制，推荐使用 JWT 认证机制。</li>
+</ul>
+<h3 id="什么是-JWT"><a href="#什么是-JWT" class="headerlink" title="什么是 JWT"></a>什么是 JWT</h3><p>JWT(英文全称：JSON Web Token) 是目前最流行的跨域认证解决方案。</p>
+<h3 id="JWT-的工作原理"><a href="#JWT-的工作原理" class="headerlink" title="JWT 的工作原理"></a>JWT 的工作原理</h3><p><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-4.png" alt="alt text"><br>总结：用户的信息通过 Token 字符串的形式，保存在客户端浏览器中。服务器通过还原 Token 字符串的形式来认证用户的身份。</p>
+<h3 id="JWT-的组成部分"><a href="#JWT-的组成部分" class="headerlink" title="JWT 的组成部分"></a>JWT 的组成部分</h3><p>通常包含3个部分，Header(头部)、Payload(有效荷载)、Signature(签名)。<br>三者之间使用英文”.”分隔,格式如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Header</span>,<span class="title class_">Payload</span>,<span class="title class_">Signature</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Payload 才是真正的用户信息，它是用户信息经过加密之后生成的字符串。</li>
+<li>Header 和 Signature 是安全性相关的部分，只是为了保证 Token 的安全性。<br><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-5.png" alt="alt text"></li>
+</ul>
+<h3 id="JWT-的使用"><a href="#JWT-的使用" class="headerlink" title="JWT 的使用"></a>JWT 的使用</h3><p>推荐做法是<strong>把 JWT 放在 HTTP 请求头的 Authorization 字段中</strong>,格式如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Authorization</span>: <span class="title class_">Bearer</span> &lt;token&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="在-Express-中使用-JWT"><a href="#在-Express-中使用-JWT" class="headerlink" title="在 Express 中使用 JWT"></a>在 Express 中使用 JWT</h3><h4 id="安装需要的两个包"><a href="#安装需要的两个包" class="headerlink" title="安装需要的两个包"></a>安装需要的两个包</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install jsonwebtoken express-jwt</span><br></pre></td></tr></table></figure>
+<ul>
+<li>jsonwebtoken 用于生成 JWT 字符串</li>
+<li>express-jwt 用于将 JWT 字符串解析还原成 JSON 对象</li>
+</ul>
+<h4 id="导入-JWT-相关的包"><a href="#导入-JWT-相关的包" class="headerlink" title="导入 JWT 相关的包"></a>导入 JWT 相关的包</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> jwt = <span class="built_in">require</span>(<span class="string">&#x27;jsonwebtoken&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> expressJWT = <span class="built_in">require</span>(<span class="string">&#x27;express-jwt&#x27;</span>)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>nodejs</category>
+        <category>express</category>
+        <category>身份认证</category>
+      </categories>
+      <tags>
+        <tag>nodejs</tag>
+        <tag>express</tag>
+        <tag>身份认证</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>express框架基础</title>
     <url>/2024/07/26/express%E6%A1%86%E6%9E%B6%E5%9F%BA%E7%A1%80/</url>
     <content><![CDATA[<h1 id="express框架基础"><a href="#express框架基础" class="headerlink" title="express框架基础"></a>express框架基础</h1><h2 id="1-了解-Express"><a href="#1-了解-Express" class="headerlink" title="1 了解 Express"></a>1 了解 Express</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><ul>
@@ -166,110 +270,6 @@
       <tags>
         <tag>nodejs</tag>
         <tag>express</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>express连接数据库以及身份认证</title>
-    <url>/2024/07/31/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/</url>
-    <content><![CDATA[<h1 id="项目中操作MySQL"><a href="#项目中操作MySQL" class="headerlink" title="项目中操作MySQL"></a>项目中操作MySQL</h1><h2 id="在项目中操作数据库的步骤"><a href="#在项目中操作数据库的步骤" class="headerlink" title="在项目中操作数据库的步骤"></a>在项目中操作数据库的步骤</h2><h3 id="安装-MySQL-数据库的第三方模块-mysql"><a href="#安装-MySQL-数据库的第三方模块-mysql" class="headerlink" title="安装 MySQL 数据库的第三方模块(mysql)"></a>安装 MySQL 数据库的第三方模块(mysql)</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install mysql</span><br></pre></td></tr></table></figure>
-<h3 id="通过-mysql-模块连接到-MySQL-数据库"><a href="#通过-mysql-模块连接到-MySQL-数据库" class="headerlink" title="通过 mysql 模块连接到 MySQL 数据库"></a>通过 mysql 模块连接到 MySQL 数据库</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 导入 mysql 模块</span></span><br><span class="line"><span class="keyword">const</span> mysql = <span class="built_in">require</span>(<span class="string">&#x27;mysql&#x27;</span>)</span><br><span class="line"><span class="comment">// 2. 建立连接</span></span><br><span class="line"><span class="keyword">const</span> db = mysql.<span class="title function_">createPool</span>(&#123;</span><br><span class="line">    <span class="attr">host</span>:<span class="string">&#x27;127.0.0.1&#x27;</span>,</span><br><span class="line">    <span class="attr">user</span>:<span class="string">&#x27;root&#x27;</span>,</span><br><span class="line">    <span class="attr">password</span>:<span class="string">&#x27;你的密码&#x27;</span></span><br><span class="line">    <span class="attr">database</span>:<span class="string">&#x27;mydb&#x27;</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="通过-mysql-模块执行-SQL-语句"><a href="#通过-mysql-模块执行-SQL-语句" class="headerlink" title="通过 mysql 模块执行 SQL 语句"></a>通过 mysql 模块执行 SQL 语句</h3><h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 检测 mysql 模块能否正常工作</span></span><br><span class="line">db.<span class="title function_">query</span>(<span class="string">&#x27;SELECT 1&#x27;</span>,<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(results)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 插入表的数据对象</span></span><br><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">username</span>:<span class="string">&#x27;ww&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;123&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ？表示占位符</span></span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&quot;INSERT INTO users (username,password) VALUES (?,?)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用数组的形式，以此将？占位符指定具体的值</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,[user.<span class="property">username</span>,user.<span class="property">password</span>],<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;插入数据成功&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="插入数据的快速方法"><a href="#插入数据的快速方法" class="headerlink" title="插入数据的快速方法"></a>插入数据的快速方法</h4><p>向表插入数据时，数据对象和每一个属性和数据表的字段一一对应，可以这样插入</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">username</span>:<span class="string">&#x27;mark&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;666&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;INSERT INTO users SET ?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,user,<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;插入数据成功&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">id</span>:<span class="number">4</span>,<span class="attr">username</span>:<span class="string">&#x27;marry&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;321&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;UPDATE users SET username=?,password=? WHERE id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,[user.<span class="property">username</span>,user.<span class="property">password</span>,user.<span class="property">id</span>],<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功!&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="更新数据边界方式"><a href="#更新数据边界方式" class="headerlink" title="更新数据边界方式"></a>更新数据边界方式</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = &#123;<span class="attr">id</span>:<span class="number">4</span>,<span class="attr">username</span>:<span class="string">&#x27;mike&#x27;</span>,<span class="attr">password</span>:<span class="string">&#x27;321&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;UPDATE users SET ? WHERE id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,[user,user.<span class="property">id</span>],<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功!&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="删除数据-比较危险删除无法恢复"><a href="#删除数据-比较危险删除无法恢复" class="headerlink" title="删除数据(比较危险删除无法恢复)"></a>删除数据(比较危险删除无法恢复)</h4><p>id是唯一标识符，来删除对应数据</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;DELETE FROM users WHERE id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr,<span class="number">4</span>,<span class="function">(<span class="params">err,results</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span>(results.<span class="property">affectedRows</span> === <span class="number">1</span>)&#123;<span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;更新数据成功!&#x27;</span>)&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="标记删除-推荐使用"><a href="#标记删除-推荐使用" class="headerlink" title="标记删除(推荐使用)"></a>标记删除(推荐使用)</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sqlStr = <span class="string">&#x27;update users set status=? where id=?&#x27;</span></span><br><span class="line">db.<span class="title function_">query</span>(sqlStr, [<span class="number">1</span>, <span class="number">3</span>], <span class="function">(<span class="params">err, results</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">return</span> <span class="variable language_">console</span>.<span class="title function_">log</span>(err.<span class="property">message</span>)</span><br><span class="line">    <span class="keyword">if</span> (results.<span class="property">affectedRows</span> === <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;标记删除成功&quot;</span>); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h1 id="前后端的身份认证"><a href="#前后端的身份认证" class="headerlink" title="前后端的身份认证"></a>前后端的身份认证</h1><h2 id="Web-开发模式"><a href="#Web-开发模式" class="headerlink" title="Web 开发模式"></a>Web 开发模式</h2><h3 id="服务器渲染的-Web-开发模式"><a href="#服务器渲染的-Web-开发模式" class="headerlink" title="服务器渲染的 Web 开发模式"></a>服务器渲染的 Web 开发模式</h3><p><strong>服务器渲染的概念:</strong> 服务器发送给客户端的HTML页面,是在服务器通过字符串的拼接,动态生成的。客户端不需要使用 Ajax 这样的技术额外请求页面的数据。代码如下:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/index.html&#x27;</span>,<span class="function">(<span class="params">req,res</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> user = &#123;<span class="attr">name</span>:<span class="string">&#x27;zs&#x27;</span>,<span class="attr">age</span>:<span class="number">20</span>&#125;</span><br><span class="line">    <span class="keyword">const</span> html = <span class="string">`&lt;h1&gt;姓名:<span class="subst">$&#123;user.name&#125;</span>,年龄:<span class="subst">$&#123;user.age&#125;</span>&lt;/h1&gt;`</span></span><br><span class="line">    res.<span class="title function_">send</span>(html)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="服务端渲染的优缺点"><a href="#服务端渲染的优缺点" class="headerlink" title="服务端渲染的优缺点"></a>服务端渲染的优缺点</h3><ul>
-<li>优点:</li>
-</ul>
-<ol>
-<li>前端耗时少。因为服务器端负责动态生成 HTML 内容,浏览器只需要直接渲染页面即可。尤其是移动端,更省电。</li>
-<li>有利于 SEO 。因为服务端响应的是完整的 HTML 页面内容,所以爬虫更容易爬取获得信息,更有利于 SEO。</li>
-</ol>
-<ul>
-<li>缺点:</li>
-</ul>
-<ol>
-<li>占用服务器资源,即服务器端完成 HTML 页面内容的拼接,如果请求较多,会对服务器造成一定的访问压力。</li>
-<li>不利于前后端分离,开发效率低。使用服务器端渲染,则无法进行分工合作,尤其对于前端复杂度高的项目,不利于项目高效开发。</li>
-</ol>
-<h3 id="前后端分离的-Web-开发模式"><a href="#前后端分离的-Web-开发模式" class="headerlink" title="前后端分离的 Web 开发模式"></a>前后端分离的 Web 开发模式</h3><p>前后端分离的概念:前后端分离的开发模式,依赖于 Ajax 技术的广泛应用。简而言之,前后端分离的 Web 开发模式,就是后端只负责提供 API 接口,前端使用 Ajax 调用接口的开发模式。</p>
-<h3 id="前后端分离的优缺点"><a href="#前后端分离的优缺点" class="headerlink" title="前后端分离的优缺点"></a>前后端分离的优缺点</h3><ul>
-<li>优点:</li>
-</ul>
-<ol>
-<li>开发体验好,前端专注于 UI 界面开发,后端专注于 api 的开发,且前端有更多的选择性。</li>
-<li>用户体验好,Ajax 技术的广泛应用,极大的提高了用户的体验,可以轻松实现页面的局部刷新。</li>
-<li>减轻了服务器端的渲染压力,每个页面最终在每个用户的浏览器中生成的。</li>
-</ol>
-<ul>
-<li>缺点:</li>
-</ul>
-<ol>
-<li>不利于 SEO ,因为 HTML 是需要客户端动态拼接完成的,所以爬虫无法爬取页面的有效信息。可以用 Vue、React 等框架的 SSR (server side render) 技术来解决 SEO 问题。</li>
-</ol>
-<h3 id="如何选择-Web-开发模式"><a href="#如何选择-Web-开发模式" class="headerlink" title="如何选择 Web 开发模式"></a>如何选择 Web 开发模式</h3><ul>
-<li>企业级网页,主要是展示而没有复杂的交互,不需要考虑 SEO,就服务器端渲染。</li>
-<li>后台管理项目,交互性比较强,不需要考虑 SEO,那么就可以使用前后端分离的开发模式。</li>
-</ul>
-<h2 id="什么是身份认证"><a href="#什么是身份认证" class="headerlink" title="什么是身份认证"></a>什么是身份认证</h2><p>身份认证又称为”身份验证”、”鉴权”，是指通过一定的手段，完成对用户身份的确认。</p>
-<h3 id="不同开发模式的身份认证"><a href="#不同开发模式的身份认证" class="headerlink" title="不同开发模式的身份认证"></a>不同开发模式的身份认证</h3><ol>
-<li>服务器渲染推荐使用 Session 认证机制</li>
-<li>前后端分离推荐使用 JWT 认证机制</li>
-</ol>
-<h2 id="Session-认证机制"><a href="#Session-认证机制" class="headerlink" title="Session 认证机制"></a>Session 认证机制</h2><h3 id="HTTP-协议的无状态性"><a href="#HTTP-协议的无状态性" class="headerlink" title="HTTP 协议的无状态性"></a>HTTP 协议的无状态性</h3><p>了解 HTTP 协议的无状态性是进一步学习 Session 认证机制的必要前提。<br>HTTP 协议的无状态性，值得是客户端的每次 HTTP 请求都是独立的，连续多个请求之间没有直接的关系，服务器不会主动保留每次HTTP请求的状态。</p>
-<h3 id="如何突破-HTTP-无状态的限制"><a href="#如何突破-HTTP-无状态的限制" class="headerlink" title="如何突破 HTTP 无状态的限制"></a>如何突破 HTTP 无状态的限制</h3><p><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image.png" alt="alt text"></p>
-<h3 id="什么是-Cookie"><a href="#什么是-Cookie" class="headerlink" title="什么是 Cookie"></a>什么是 Cookie</h3><p>Cookie 是存储在用户浏览器中的一段不超过 4 KB 的字符串。他由一个名称(Name)、一个值(Value) 和其他几个用于 Cookie 有效期、安全性、适用范围的可选属性组成。</p>
-<p>不同域名下的 Cookie 各自独立，每当客户端发起请求时，会自动把当前域名下所有未过期的 Cookie 一同发送到服务器。</p>
-<p>Cookie 的几大特性：</p>
-<ol>
-<li>自动发送</li>
-<li>域名独立</li>
-<li>过期时限</li>
-<li>4KB 限制</li>
-</ol>
-<h3 id="Cookie-在身份认证中的作用"><a href="#Cookie-在身份认证中的作用" class="headerlink" title="Cookie 在身份认证中的作用"></a>Cookie 在身份认证中的作用</h3><p>客户端在第一次请求服务器的时候，服务器通过响应头的形式，向客户端发送一个身份认证的 Cookie，客户端会自动将 Cookie 保存在浏览器中。<br>随后，当客户端浏览器每次请求服务器的时候，浏览器会自动将身份认证相关的 Cookie，通过请求头的形式发送给服务器，服务器即可验证客户端的身份。<br><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-1.png" alt="alt text"></p>
-<h3 id="Cookie-不具有安全性"><a href="#Cookie-不具有安全性" class="headerlink" title="Cookie 不具有安全性"></a>Cookie 不具有安全性</h3><p>由于 Cookie 是存储在浏览器中的，而且浏览器也提供了读写 Cookie 的 API，因此 Cookie 很容易被伪造，不具有安全性。因此不建议服务器将重要的隐私数据，通过 Cookie 的形式发送给浏览器。</p>
-<h3 id="提高身份认证的安全性"><a href="#提高身份认证的安全性" class="headerlink" title="提高身份认证的安全性"></a>提高身份认证的安全性</h3><p>为了防止客户伪造会员卡，收银员在拿到客户出示的会员卡之后，可以在收银机上进行刷卡认证，只有收银机确认存在的会员卡，才能被正常使用。<br><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-2.png" alt="alt text"></p>
-<h3 id="Session-的工作原理"><a href="#Session-的工作原理" class="headerlink" title="Session 的工作原理"></a>Session 的工作原理</h3><p><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-3.png" alt="alt text"></p>
-<h3 id="配置-Session-中间件"><a href="#配置-Session-中间件" class="headerlink" title="配置 Session 中间件"></a>配置 Session 中间件</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 配置 Session 中间件</span></span><br><span class="line"><span class="keyword">const</span> session = <span class="built_in">require</span>(<span class="string">&#x27;express-session&#x27;</span>)</span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">session</span>(&#123;</span><br><span class="line">  <span class="attr">secret</span>: <span class="string">&#x27;itheima&#x27;</span>,</span><br><span class="line">  <span class="attr">resave</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">saveUninitialized</span>: <span class="literal">true</span></span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
-
-<h2 id="JWT-认证机制"><a href="#JWT-认证机制" class="headerlink" title="JWT 认证机制"></a>JWT 认证机制</h2><h3 id="了解-Session-认证的局限性"><a href="#了解-Session-认证的局限性" class="headerlink" title="了解 Session 认证的局限性"></a>了解 Session 认证的局限性</h3><p>Session 认证机制需要配合 Cookie 才能实现。由于 Cookie 默认不支持跨域访问，所以，当涉及到前端跨域请求后端接口的时候，需要做很多额外的配置，才能实现跨域 Session 认证。</p>
-<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><ul>
-<li>当前端请求后端接口<strong>不存在跨域问题</strong>的时候，推荐使用 Session 身份认证机制。</li>
-<li>当前端需要跨域请求后端接口的时候，不推荐使用 Session 身份认证机制，推荐使用 JWT 认证机制。</li>
-</ul>
-<h3 id="什么是-JWT"><a href="#什么是-JWT" class="headerlink" title="什么是 JWT"></a>什么是 JWT</h3><p>JWT(英文全称：JSON Web Token) 是目前最流行的跨域认证解决方案。</p>
-<h3 id="JWT-的工作原理"><a href="#JWT-的工作原理" class="headerlink" title="JWT 的工作原理"></a>JWT 的工作原理</h3><p><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-4.png" alt="alt text"><br>总结：用户的信息通过 Token 字符串的形式，保存在客户端浏览器中。服务器通过还原 Token 字符串的形式来认证用户的身份。</p>
-<h3 id="JWT-的组成部分"><a href="#JWT-的组成部分" class="headerlink" title="JWT 的组成部分"></a>JWT 的组成部分</h3><p>通常包含3个部分，Header(头部)、Payload(有效荷载)、Signature(签名)。<br>三者之间使用英文”.”分隔,格式如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Header</span>,<span class="title class_">Payload</span>,<span class="title class_">Signature</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>Payload 才是真正的用户信息，它是用户信息经过加密之后生成的字符串。</li>
-<li>Header 和 Signature 是安全性相关的部分，只是为了保证 Token 的安全性。<br><img src="/../img/express%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%A5%E5%8F%8A%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/image-5.png" alt="alt text"></li>
-</ul>
-<h3 id="JWT-的使用"><a href="#JWT-的使用" class="headerlink" title="JWT 的使用"></a>JWT 的使用</h3><p>推荐做法是<strong>把 JWT 放在 HTTP 请求头的 Authorization 字段中</strong>,格式如下：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title class_">Authorization</span>: <span class="title class_">Bearer</span> &lt;token&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="在-Express-中使用-JWT"><a href="#在-Express-中使用-JWT" class="headerlink" title="在 Express 中使用 JWT"></a>在 Express 中使用 JWT</h3><h4 id="安装需要的两个包"><a href="#安装需要的两个包" class="headerlink" title="安装需要的两个包"></a>安装需要的两个包</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install jsonwebtoken express-jwt</span><br></pre></td></tr></table></figure>
-<ul>
-<li>jsonwebtoken 用于生成 JWT 字符串</li>
-<li>express-jwt 用于将 JWT 字符串解析还原成 JSON 对象</li>
-</ul>
-<h4 id="导入-JWT-相关的包"><a href="#导入-JWT-相关的包" class="headerlink" title="导入 JWT 相关的包"></a>导入 JWT 相关的包</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> jwt = <span class="built_in">require</span>(<span class="string">&#x27;jsonwebtoken&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> expressJWT = <span class="built_in">require</span>(<span class="string">&#x27;express-jwt&#x27;</span>)</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>nodejs</category>
-        <category>express</category>
-        <category>身份认证</category>
-      </categories>
-      <tags>
-        <tag>nodejs</tag>
-        <tag>express</tag>
-        <tag>身份认证</tag>
       </tags>
   </entry>
   <entry>
